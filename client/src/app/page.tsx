@@ -2,7 +2,7 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import FileUpload from "./components/FileUpload";
-import {useState} from "react";
+import { useState } from "react";
 
 /**
  * Home 컴포넌트
