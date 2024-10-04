@@ -7,7 +7,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="kr">
-      <head />
+      <head>
+      	{/*메타데이터 핸들링 할 곳*/}
+      </head>
       <body>{children}</body>
     </html>
   );
