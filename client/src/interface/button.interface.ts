@@ -6,8 +6,8 @@
  * @property {boolean} disabled - 버튼의 비활성화 상태
  */
 export default interface ButtonProps {
-	label: string;
-	onClick: () => void;
-	variant?: "primary" | "secondary" | "danger" | "success";
-	disabled? : boolean;
+  label: string;
+  onClick: () => void;
+  variant?: "primary" | "secondary" | "danger" | "success";
+  disabled?: boolean;
 }
