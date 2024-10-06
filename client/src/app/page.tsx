@@ -1,34 +1,41 @@
 "use client";
-import Image from "next/image";
-import styles from "./page.module.css";
+
+import React, { useState } from "react";
 import FileUpload from "./components/FileUpload";
-import { useState } from "react";
+import FileList from "./components/FileList";
 
 /**
- * Home 컴포넌트
+ * 홈 페이지 컴포넌트
  *
- * @returns {JSX.Element} - 홈 페이지 컴포넌트
+ * @returns {JSX.Element} 홈 페이지 JSX 요소
  */
 export default function Home() {
-  const [files, setFiles] = useState<{ id: number; filename: string }[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<
+    { id: number; filename: string }[]
+  >([]); // 업로드된 파일 리스트 상태
 
   /**
    * 파일 업로드 핸들러
    * @param {string} title - 업로드할 폴더의 제목
-   * @param {File[]} uploadedFiles - 업로드할 파일 목록
+   * @param {File[]} files - 업로드할 파일 목록
    */
-  const handleFileUpload = (title: string, uploadedFiles: File[]) => {
-    // 파일 업로드 로직 (API 호출 대신 여기서 임시로 처리)
-    const newFiles = uploadedFiles.map((file) => ({
-      id: Date.now(),
-      filename: file.name,
-    })); // 파일 아이디와 제목 저장 (임시)
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]); // 파일 리스트 업데이트
-    console.log(files);
+  const handleFileUpload = (title: string, files: File[]) => {
+    console.log("파일 업로드 핸들러 호출:", { title, files }); // 업로드 핸들러 호출 로그
+
+    const newFiles = files.map((file) => ({
+      id: Date.now() + Math.random(), // 고유한 ID 생성
+      filename: file.webkitRelativePath, // 파일의 상대 경로를 저장
+    }));
+    setUploadedFiles((prevFiles) => [...prevFiles, ...newFiles]); // 파일 리스트 업데이트
   };
+
   return (
     <div>
-      <FileUpload onFileUpload={handleFileUpload} />
+      <h1>나의 소스코드 저장소</h1>
+      <FileUpload onFileUpload={handleFileUpload} />{" "}
+      {/* 파일 업로드 컴포넌트 사용 */}
+      <FileList files={uploadedFiles} />{" "}
+      {/* 업로드된 파일 목록 컴포넌트 사용 */}
     </div>
   );
 }
