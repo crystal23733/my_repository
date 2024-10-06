@@ -2,7 +2,7 @@
 
 import React, { useState, ChangeEvent, FormEvent } from "react";
 
-import CreatePostFormData from "../../interface/createPostFormData";
+import createFormData from "../../interface/createPostFormData";
 
 /**
  * 게시글 작성 폼 컴포넌트
@@ -25,7 +25,7 @@ interface CreatePostFormProps {
   onSubmit: (data: CreatePostFormData) => void;
 }
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit }) => {
-  const [formData, setFormData] = useState<CreatePostFormData>({
+  const [formData, setFormData] = useState<createFormData>({
     title: "",
     comment: "",
     image: null,
