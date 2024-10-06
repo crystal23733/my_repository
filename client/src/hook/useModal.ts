@@ -11,5 +11,5 @@ export default () => {
     setIsActive(false);
   };
 
-  return { isActive, handleMypageModal, closeModal };
+  return { isActive, handleModal, closeModal };
 };
