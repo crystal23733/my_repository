@@ -5,8 +5,7 @@
  * @property {File | null} image - 업로드 할 이미지 파일
  */
 export default interface createFormData {
-	title: string;
-	comment: string;
-	image: File | null;
+  title: string;
+  comment: string;
+  image: File | null;
 }
-
