@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, ChangeEvent, FormEvent } from "react";
-
-import createFormData from "../../interface/createPostFormData";
+import React, { useState } from "react";
+import createFormData from "../../interface/createFormData.interface"; // 인터페이스 가져오기
+import Modal from "../common/Modal";
+import IModalProps from "../../interface/modal.interface";
 
 /**
  * 게시글 작성 폼 컴포넌트
@@ -12,108 +13,93 @@ import createFormData from "../../interface/createPostFormData";
  *
  * @component
  *
- * @param {Object} props - 컴포넌트에 전달되는 props
- * @param {function(CreatePostFormData): void} props.onSubmit - 폼 제출 시 호출될 함수
- *
+ * @param {IModalProps} props - 모달의 활성화 상태 및 모달 닫기 함수 포함
  * @returns {JSX.Element} 게시글 작성 폼
  */
-interface CreatePostFormProps {
-  /**
-   * 게시글 작성 폼 제출 시 호출될 함수
-   * @param {CreatePostFormData} data - 제출된 폼 데이터
-   */
-  onSubmit: (data: CreatePostFormData) => void;
-}
-const CreatePostForm: React.FC<CreatePostFormProps> = ({ onSubmit }) => {
-  const [formData, setFormData] = useState<createFormData>({
-    title: "",
-    comment: "",
-    image: null,
-  });
+const CreatePostForm: React.FC<IModalProps> = ({ isActive, closeModal }) => {
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [image, setImage] = useState<File | null>(null);
 
-  // 입력필드 변경 시 상태 업데이트
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  // 이미지 업로드 핸들러
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] || null;
+    setImage(file);
+    console.log(file);
   };
 
-  // 이미지 파일 선택 시 상태 업데이트
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFormData((prevData) => ({ ...prevData, image: e.target.files![0] }));
+  // 폼 제출 핸들러
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    // 제출 시 onSubmit 호출
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    if (image) {
+      formData.append("image", image);
     }
-  };
 
-  // 폼 제출 시 호출되는 함수
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onSubmit(formData);
+    // FormData의 내용을 콘솔에 출력
+    console.log("폼 데이터:");
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
+
+    // 폼 리셋
+    setTitle("");
+    setContent("");
+    setImage(null);
+    closeModal();
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="field">
-        <label className="label" htmlFor="title">
-          제목
-        </label>
-        <div className="control">
-          <input
-            className="input"
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-            placeholder="제목을 입력하세요"
-          />
+    <Modal
+      isActive={isActive}
+      closeModal={closeModal}
+      title="게시글 작성"
+      onConfirm={handleSubmit}
+      loadingStatus={false}
+    >
+      <form onSubmit={handleSubmit}>
+        <div className="field">
+          <label className="label">제목</label>
+          <div className="control">
+            <input
+              className="input"
+              type="text"
+              placeholder="게시글 제목"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
         </div>
-      </div>
-
-      <div className="field">
-        <label className="label" htmlFor="content">
-          내용
-        </label>
-        <div className="control">
-          <textarea
-            className="textarea"
-            id="content"
-            name="content"
-            value={formData.content}
-            onChange={handleChange}
-            required
-            placeholder="내용을 입력하세요"
-          ></textarea>
+        <div className="field">
+          <label className="label">내용</label>
+          <div className="control">
+            <textarea
+              className="textarea"
+              placeholder="게시글 내용을 입력하세요."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              required
+            />
+          </div>
         </div>
-      </div>
-
-      <div className="field">
-        <label className="label" htmlFor="image">
-          이미지 업로드
-        </label>
-        <div className="control">
-          <input
-            className="input"
-            type="file"
-            id="image"
-            name="image"
-            accept="image/*"
-            onChange={handleImageChange}
-            required
-          />
+        <div className="field">
+          <label className="label">이미지 업로드</label>
+          <div className="control">
+            <input
+              className="input"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+            />
+          </div>
         </div>
-      </div>
-
-      <div className="field is-grouped">
-        <div className="control">
-          <button type="submit" className="button is-primary">
-            제출
-          </button>
-        </div>
-      </div>
-    </form>
+      </form>
+    </Modal>
   );
 };
 

@@ -44,7 +44,7 @@ const Modal: React.FC<{
               onClick={onConfirm}
               disabled={loadingStatus}
             >
-              확인
+              글쓰기
             </button>
             <button className="button" type="reset" onClick={closeModal}>
               취소

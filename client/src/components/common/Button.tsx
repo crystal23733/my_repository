@@ -24,9 +24,7 @@ const Button: React.FC<ButtonProps> = ({
    * @param {"primary" | "secondary" | "danger" | "success"} variant - 버튼의 스타일 변형
    * @returns {string} Bulma 버튼 클래스
    */
-  const getVariantClass = (
-    variant: ButtonProps["variant"]
-  ): string => {
+  const getVariantClass = (variant: ButtonProps["variant"]): string => {
     switch (variant) {
       case "primary":
         return "is-primary";
@@ -55,4 +53,3 @@ const Button: React.FC<ButtonProps> = ({
 };
 
 export default Button;
-
