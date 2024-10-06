@@ -1,5 +1,5 @@
 import React from "react";
-import { ButtonProps } from "../../types/Button";
+import ButtonProps from "../../interface/Button";
 
 /**
  * 재사용 가능한 버튼 컴포넌트
