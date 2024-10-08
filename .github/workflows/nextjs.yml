@@ -45,6 +45,7 @@ jobs:
         with:
           node-version: "20"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
+          cache-dependency-path: 'client/package-lock.json'  # 이 부분이 추가됨
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
