@@ -19,12 +19,11 @@ interface ApiResponse {
  */
 export default () => {
   const [loading, setLoading] = useState<boolean>(false);
-  
+
   const handleSubmit = async (
     { title, content, image }: SubmitPostProps,
-    closeModal: () => void
+    closeModal: () => void,
   ): Promise<void> => {
-
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
@@ -37,12 +36,9 @@ export default () => {
       setLoading(true);
 
       const api = new FetchApi<ApiResponse>("/api/posts");
-      const response = await api.request(
-        "",
-        "POST",
-        formData,
-        { "Content-Type": "multipart/form-data" }
-      );
+      const response = await api.request("", "POST", formData, {
+        "Content-Type": "multipart/form-data",
+      });
 
       console.log("서버 응답:", response);
       alert("게시글이 성공적으로 등록되었습니다.");
