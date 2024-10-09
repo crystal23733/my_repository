@@ -22,7 +22,7 @@ const CreatePostForm: React.FC<IModalProps> = ({ isActive, closeModal }) => {
   const [content, setContent] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
 
-  const {handleSubmit, loading} = useSubmitPost();
+  const { handleSubmit, loading } = useSubmitPost();
   // 이미지 업로드 핸들러
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
@@ -31,10 +31,10 @@ const CreatePostForm: React.FC<IModalProps> = ({ isActive, closeModal }) => {
   };
 
   // 폼 제출 핸들러
-  const onSubmit = (e:React.FormEvent) => {
-	  e.preventDefault();
-	  handleSubmit({title, content, image}, closeModal);
-  }
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit({ title, content, image }, closeModal);
+  };
 
   return (
     <Modal
