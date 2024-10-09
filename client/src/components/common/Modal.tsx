@@ -21,7 +21,7 @@ const Modal: React.FC<{
   closeModal: () => void;
   title: string;
   children: ReactNode;
-  onConfirm: () => void;
+  onConfirm: (e: React.MouseEvent<HTMLButtonElement>) => void;
   loadingStatus: boolean;
 }> = ({ isActive, closeModal, title, children, onConfirm, loadingStatus }) => {
   return (
