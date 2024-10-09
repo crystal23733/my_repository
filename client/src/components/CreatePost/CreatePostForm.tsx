@@ -19,20 +19,27 @@ import useSubmitPost from "../../hook/useSubmitPost";
 const CreatePostForm: React.FC<IModalProps> = ({ isActive, closeModal }) => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const [image, setImage] = useState<File | null>(null);
+  const [images, setImages] = useState<File[]>([]);
 
   const { handleSubmit, loading } = useSubmitPost();
   // 이미지 업로드 핸들러
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-    setImage(file);
-    console.log(file);
+    const files = event.target.files;
+    if (files) {
+      setImages(Array.from(files)); // 선택된 파일을 배열로 변환
+    } else {
+      setImages([]); // 파일이 없을 경우 상태를 초기화
+    }
   };
+
+  console.log("제목:", title);
+  console.log("내용:", content);
+  console.log("이미지 수:", images.length);
 
   // 폼 제출 핸들러
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleSubmit({ title, content, image }, closeModal);
+    handleSubmit({ title, content, images }, closeModal);
   };
 
   return (
@@ -40,7 +47,7 @@ const CreatePostForm: React.FC<IModalProps> = ({ isActive, closeModal }) => {
       isActive={isActive}
       closeModal={closeModal}
       title="게시글 작성"
-      onConfirm={handleSubmit}
+      onConfirm={onSubmit}
       loadingStatus={loading}
     >
       <form onSubmit={onSubmit}>
@@ -76,6 +83,7 @@ const CreatePostForm: React.FC<IModalProps> = ({ isActive, closeModal }) => {
               className="input"
               type="file"
               accept="image/*"
+              multiple
               onChange={handleImageUpload}
             />
           </div>
