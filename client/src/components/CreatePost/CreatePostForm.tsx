@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import createFormData from "../../interface/createFormData.interface"; // 인터페이스 가져오기
 import Modal from "../common/Modal";
 import IModalProps from "../../interface/modal.interface";
 import useSubmitPost from "../../hook/useSubmitPost";
