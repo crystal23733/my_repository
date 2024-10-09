@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import createFormData from "../../interface/createFormData.interface"; // 인터페이스 가져오기
 import Modal from "../common/Modal";
 import IModalProps from "../../interface/modal.interface";
+import useSubmitPost from "../../hook/useSubmitPost";
 
 /**
  * 게시글 작성 폼 컴포넌트
@@ -19,38 +19,27 @@ import IModalProps from "../../interface/modal.interface";
 const CreatePostForm: React.FC<IModalProps> = ({ isActive, closeModal }) => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const [image, setImage] = useState<File | null>(null);
+  const [images, setImages] = useState<File[]>([]);
 
+  const { handleSubmit, loading } = useSubmitPost();
   // 이미지 업로드 핸들러
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-    setImage(file);
-    console.log(file);
+    const files = event.target.files;
+    if (files) {
+      setImages(Array.from(files)); // 선택된 파일을 배열로 변환
+    } else {
+      setImages([]); // 파일이 없을 경우 상태를 초기화
+    }
   };
 
+  console.log("제목:", title);
+  console.log("내용:", content);
+  console.log("이미지 수:", images.length);
+
   // 폼 제출 핸들러
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    // 제출 시 onSubmit 호출
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("content", content);
-    if (image) {
-      formData.append("image", image);
-    }
-
-    // FormData의 내용을 콘솔에 출력
-    console.log("폼 데이터:");
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value);
-    });
-
-    // 폼 리셋
-    setTitle("");
-    setContent("");
-    setImage(null);
-    closeModal();
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit({ title, content, images }, closeModal);
   };
 
   return (
@@ -58,10 +47,10 @@ const CreatePostForm: React.FC<IModalProps> = ({ isActive, closeModal }) => {
       isActive={isActive}
       closeModal={closeModal}
       title="게시글 작성"
-      onConfirm={handleSubmit}
-      loadingStatus={false}
+      onConfirm={onSubmit}
+      loadingStatus={loading}
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={onSubmit}>
         <div className="field">
           <label className="label">제목</label>
           <div className="control">
@@ -94,6 +83,7 @@ const CreatePostForm: React.FC<IModalProps> = ({ isActive, closeModal }) => {
               className="input"
               type="file"
               accept="image/*"
+              multiple
               onChange={handleImageUpload}
             />
           </div>
