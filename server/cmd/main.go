@@ -1,7 +1,9 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"server/config"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -9,8 +11,20 @@ import (
 
 // main함수는 서버를 초기화하고 기본설정을 적용한 뒤 실행한다.
 func main() {
+	// .env 파일 로드
+	err := config.LoadEnv()
+	if err != nil {
+		log.Fatal("환경 변수를 로드하지 못했습니다:", err)
+	}
+
 	// Echo인스턴스 생성
 	e := echo.New()
+
+	// CORS 설정
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{config.ClientURL()},
+		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodOptions, http.MethodPatch, http.MethodDelete},
+	}))
 
 	// 미들웨어 설정
 	e.Use(middleware.Logger())
