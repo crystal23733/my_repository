@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"server/config"
+	"server/controller"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -30,8 +31,12 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
+	// post라우팅
+	postController := controller.NewPostController()
+
 	// 기본 경로에 대한 핸들러 설정
 	e.GET("/", hello)
+	e.POST("/post", postController.HelloWorld)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
