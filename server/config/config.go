@@ -34,3 +34,13 @@ func ClientURL() string {
 	clientURL := os.Getenv("CLIENT_URL")
 	return clientURL
 }
+
+func DB_URL() string {
+	dbUrl := os.Getenv("DB_URL")
+	return dbUrl
+}
+
+func DB_NAME() string {
+	dbName := os.Getenv("DB_NAME")
+	return dbName
+}
