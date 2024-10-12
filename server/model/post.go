@@ -1,4 +1,4 @@
-package post
+package model
 
 // post구조체는 게시글의 구조를 정의한다.
 type Post struct {
