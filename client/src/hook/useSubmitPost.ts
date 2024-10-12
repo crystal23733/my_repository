@@ -54,9 +54,7 @@ const useSubmitPost = () => {
 
       const api = new FetchApi<ApiResponse>(baseUrl);
 
-      const response = await api.request(postEndpoint, "POST", formData, {
-        "Content-Type": "multipart/form-data",
-      });
+      const response = await api.request(postEndpoint, "POST", formData);
 
       console.log("서버 응답:", response);
       alert("게시글이 성공적으로 등록되었습니다.");
