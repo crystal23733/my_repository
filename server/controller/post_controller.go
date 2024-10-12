@@ -1,20 +1,22 @@
 package controller
 
 import (
-	"fmt"
+	"context"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+	"server/config"
 	"server/model"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // PostController는 게시글 관련 요청을 처리하는 컨트롤러이다.
-type PostController struct{
+type PostController struct {
 	DB *mongo.Client
 }
 
@@ -28,7 +30,7 @@ func (c *PostController) HelloWorld(ctx echo.Context) error {
 	// 폼 필드에서 필드를 추출
 	title := ctx.FormValue("title")
 	content := ctx.FormValue("content")
-	
+
 	// 제목과 내용이 없는 경우 Bad Request 로그와 응답
 	if title == "" || content == "" {
 		log.Println("Error: 제목 또는 내용이 비어 있습니다.")
@@ -37,7 +39,7 @@ func (c *PostController) HelloWorld(ctx echo.Context) error {
 
 	// 수신할 파일들을 저장할 경로 설정
 	savePath := "./uploads"
-	if _, err := os.Stat(savePath); os.IsNotExist(err){
+	if _, err := os.Stat(savePath); os.IsNotExist(err) {
 		os.Mkdir(savePath, os.ModePerm)
 	}
 
@@ -75,15 +77,26 @@ func (c *PostController) HelloWorld(ctx echo.Context) error {
 
 	// 데이터 확인
 	post := model.Post{
-		Title: title,
+		Title:   title,
 		Content: content,
-		Images: imagePaths,
+		Images:  imagePaths,
 	}
-	fmt.Printf("받은 데이터: %+v\n", post)
+
+	// MongoDB에 데이터 저장
+	collection := c.DB.Database(config.DB_NAME()).Collection("posts")
+	ctxMongo, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	result, err := collection.InsertOne(ctxMongo, post)
+	if err != nil {
+		log.Fatal("MongoDB 데이터 저장 실패:", err)
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "데이터 저장 실패"})
+	}
+	log.Printf("MongoDB에 데이터 삽입 완료: ID=%v", result.InsertedID)
 
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
-		"message":"데이터를 받았습니다.",
-		"post": post,
+		"message": "데이터를 받았습니다.",
+		"post":    post,
 	})
 
 }
