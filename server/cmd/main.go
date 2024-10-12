@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"server/config"
 	"server/controller"
+	"server/db"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -17,6 +18,9 @@ func main() {
 	if err != nil {
 		log.Fatal("환경 변수를 로드하지 못했습니다:", err)
 	}
+	
+	// MongoDB 연결 초기화
+	dbClient := db.ConnectMongo()
 
 	// Echo인스턴스 생성
 	e := echo.New()
@@ -32,7 +36,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// post라우팅
-	postController := controller.NewPostController()
+	postController := controller.NewPostController(dbClient)
 
 	// 기본 경로에 대한 핸들러 설정
 	e.GET("/", hello)
