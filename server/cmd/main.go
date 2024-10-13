@@ -46,7 +46,7 @@ func main() {
 	e.GET("/posts/titles", postController.GetPostsTitles)
 	e.GET("/posts/:id", postController.GetPostsDetails)
 
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":" + config.Port()))
 }
 
 // hello 함수는 기본 "/" 경로에서 호출되며, 간단한 응답을 반환합니다.
