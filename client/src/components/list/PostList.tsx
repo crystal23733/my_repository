@@ -29,14 +29,14 @@ const PostList: React.FC = () => {
           <div className="panel-block">게시글이 없습니다.</div>
         ) : (
           posts.map((post) => (
-            <Link
-              href={`/${post.id}`}
+            <a
+              href="#"
               key={post.id}
               className={`panel-block ${post.id === selectedPostId ? "is-active" : ""}`}
               onClick={() => handlePostClick(post.id)}
             >
               {post.title}
-            </Link>
+            </a>
           ))
         )}
       </nav>
