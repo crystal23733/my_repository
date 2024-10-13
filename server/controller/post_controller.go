@@ -25,8 +25,8 @@ func NewPostController(db *mongo.Client) *PostController {
 	return &PostController{DB: db}
 }
 
-// Hello World를 출력하는 함수
-func (c *PostController) HelloWorld(ctx echo.Context) error {
+// PostsCreate
+func (c *PostController) PostsCreate(ctx echo.Context) error {
 	// 폼 필드에서 필드를 추출
 	title := ctx.FormValue("title")
 	content := ctx.FormValue("content")
