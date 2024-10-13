@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import CreatePostForm from "../components/CreatePost/CreatePostForm"; // 게시글 작성 폼 가져오기
 import PostList from "../components/list/PostList";
 import useModal from "../hook/useModal";
