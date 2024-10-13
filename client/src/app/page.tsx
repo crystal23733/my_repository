@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useState} from "react";
+import React, { useState } from "react";
 import CreatePostForm from "../components/CreatePost/CreatePostForm"; // 게시글 작성 폼 가져오기
 import PostList from "../components/list/PostList";
 import useModal from "../hook/useModal";
@@ -16,27 +16,27 @@ import useModal from "../hook/useModal";
  */
 const HomePage: React.FC = () => {
   const { isActive, handleModal, closeModal } = useModal();
-  
+
   // 더미데이터
-  const [posts, setPosts] = useState<{id:string; title:string}[]>([
-	  { id: "1", title: "첫 번째 게시글" },
-    	  { id: "2", title: "두 번째 게시글" },
-	  { id: "3", title: "세 번째 게시글" },
+  const [posts, setPosts] = useState<{ id: string; title: string }[]>([
+    { id: "1", title: "첫 번째 게시글" },
+    { id: "2", title: "두 번째 게시글" },
+    { id: "3", title: "세 번째 게시글" },
   ]);
 
   return (
     <div className="container">
       <div className="create-box">
-      	<h1 className="title">내 블로그</h1>
-      	<button className="button is-primary" onClick={handleModal}>
-        	글쓰기
-      	</button>
+        <h1 className="title">내 블로그</h1>
+        <button className="button is-primary" onClick={handleModal}>
+          글쓰기
+        </button>
 
-      	{/* 모달 컴포넌트 */}
-      	<CreatePostForm isActive={isActive} closeModal={closeModal} />
+        {/* 모달 컴포넌트 */}
+        <CreatePostForm isActive={isActive} closeModal={closeModal} />
       </div>
       <div className="list-box">
-      	<PostList posts={posts}/>
+        <PostList posts={posts} />
       </div>
     </div>
   );
