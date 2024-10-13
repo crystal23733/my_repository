@@ -12,10 +12,7 @@ export default class FetchApi<T> {
    * @param {string} baseUrl - API의 기본 URL
    * @param {object} [defaultHeaders={}] - 기본 요청 헤더 (선택 사항)
    */
-  constructor(
-    baseUrl: string,
-    defaultHeaders: object = {},
-  ) {
+  constructor(baseUrl: string, defaultHeaders: object = {}) {
     this.baseUrl = baseUrl;
     this.defaultHeaders = defaultHeaders;
   }
