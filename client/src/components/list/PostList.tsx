@@ -1,12 +1,9 @@
 import React from "react";
+import useGetPostsFetch from '../../hook/useGetPostsFetch';
 
 interface Post {
   id: string;
   title: string;
-}
-
-interface PostListProps {
-  posts: Post[]; // 게시글 리스트를 props로 받음
 }
 
 /**
@@ -16,7 +13,12 @@ interface PostListProps {
  * @param {PostListProps} props - 게시글 리스트 데이터
  * @returns {JSX.Element} 게시글 리스트 UI
  */
-const PostList: React.FC<PostListProps> = ({ posts }) => {
+const PostList: React.FC = () => {
+	const {posts, loading, error} = useGetPostsFetch();
+
+	if (loading) return <div>...로딩중</div>;
+	if (error) return <div>에러:{error}</div>;
+
   return (
     <nav className="panel">
       <p className="panel-heading">게시글 목록</p>
