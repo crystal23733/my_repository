@@ -124,7 +124,7 @@ func (c *PostController) GetPostsTitles(ctx echo.Context) error {
 	}
 	defer cursor.Close(ctxMongo)
 
-	var posts []model.Post
+	var posts []model.Gets
 	if err := cursor.All(ctxMongo, &posts); err != nil {
         	log.Printf("데이터 디코딩 실패: %v", err)
         	return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "데이터를 가져오는 중 문제가 발생했습니다."})
