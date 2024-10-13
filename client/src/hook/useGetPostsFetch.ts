@@ -21,10 +21,11 @@ export default (): UseGetPostsFetchReturn => {
   useEffect(() => {
     const fetchData = async () => {
       const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL as string;
-      const TITLE_URL = process.env.NEXT_PUBLIC_TITLE_URL as string;
+      const POSTS_URL = process.env.NEXT_PUBLIC_POST_ENDPOINT as string;
+      const TITLE_URL = process.env.NEXT_PUBLIC_TITLE_ENDPOINT as string;
       const listApi = new FetchApi<Post[]>(BASE_URL);
       try {
-        const data = await listApi.request(TITLE_URL, "GET");
+        const data = await listApi.request(POSTS_URL + TITLE_URL, "GET");
         setPosts(data);
       } catch (err) {
         setError((err as Error).message);
