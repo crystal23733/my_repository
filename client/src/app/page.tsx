@@ -17,13 +17,6 @@ import useModal from "../hook/useModal";
 const HomePage: React.FC = () => {
   const { isActive, handleModal, closeModal } = useModal();
 
-  // 더미데이터
-  const [posts, setPosts] = useState<{ id: string; title: string }[]>([
-    { id: "1", title: "첫 번째 게시글" },
-    { id: "2", title: "두 번째 게시글" },
-    { id: "3", title: "세 번째 게시글" },
-  ]);
-
   return (
     <div className="container">
       <div className="create-box">
@@ -36,7 +29,7 @@ const HomePage: React.FC = () => {
         <CreatePostForm isActive={isActive} closeModal={closeModal} />
       </div>
       <div className="list-box">
-        <PostList posts={posts} />
+        <PostList />
       </div>
     </div>
   );
