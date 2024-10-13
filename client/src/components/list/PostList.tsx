@@ -1,5 +1,6 @@
 import React from "react";
 import useGetPostsFetch from "../../hook/useGetPostsFetch";
+import Link from 'next/link';
 
 /**
  * 게시글 리스트 컴포넌트
@@ -10,7 +11,7 @@ import useGetPostsFetch from "../../hook/useGetPostsFetch";
  */
 const PostList: React.FC = () => {
   const { posts, loading, error } = useGetPostsFetch();
-
+  
   if (loading) return <div>...로딩중</div>;
   if (error) return <div>에러:{error}</div>;
 
@@ -21,9 +22,9 @@ const PostList: React.FC = () => {
         <div className="panel-block">게시글이 없습니다.</div>
       ) : (
         posts.map((post) => (
-          <a key={post.id} className="panel-block">
+          <Link href={`/${post.id}`} key={post.id} className="panel-block">
             {post.title}
-          </a>
+          </Link>
         ))
       )}
     </nav>
