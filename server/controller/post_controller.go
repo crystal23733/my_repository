@@ -12,17 +12,23 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // PostController는 게시글 관련 요청을 처리하는 컨트롤러이다.
 type PostController struct {
 	DB *mongo.Client
+	DBName string
 }
 
 // NewPostController는 새로운 PostController 인스턴스를 생성한다.
 func NewPostController(db *mongo.Client) *PostController {
-	return &PostController{DB: db}
+	return &PostController{
+		DB: db,
+		DBName: config.DB_NAME(),
+	}
 }
 
 // PostsCreate
@@ -83,13 +89,13 @@ func (c *PostController) PostsCreate(ctx echo.Context) error {
 	}
 
 	// MongoDB에 데이터 저장
-	collection := c.DB.Database(config.DB_NAME()).Collection("posts")
+	collection := c.DB.Database(c.DBName).Collection("posts")
 	ctxMongo, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	result, err := collection.InsertOne(ctxMongo, post)
 	if err != nil {
-		log.Fatal("MongoDB 데이터 저장 실패:", err)
+		log.Printf("MongoDB 데이터 저장 실패:%v", err)
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "데이터 저장 실패"})
 	}
 	log.Printf("MongoDB에 데이터 삽입 완료: ID=%v", result.InsertedID)
@@ -99,4 +105,30 @@ func (c *PostController) PostsCreate(ctx echo.Context) error {
 		"post":    post,
 	})
 
+}
+
+// 게시글 제목과 ID를 반환하는 함수
+func (c *PostController) GetPostsTitles(ctx echo.Context) error {
+	collection := c.DB.Database(c.DBName).Collection("posts")
+	ctxMongo, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// MongoDB에서 게시글의 ID와 제목만 가져옴
+	cursor, err := collection.Find(ctxMongo, bson.M{}, options.Find().SetProjection(bson.M{
+		"title":1,
+		"_id":1,
+	}))
+	if err != nil {
+		log.Println("MongoDB 쿼리 실패:", err)
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error":"데이터를 가져오는 중 문제가 발생하였습니다."})
+	}
+	defer cursor.Close(ctxMongo)
+
+	var posts []model.Post
+	if err := cursor.All(ctxMongo, &posts); err != nil {
+        	log.Printf("데이터 디코딩 실패: %v", err)
+        	return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "데이터를 가져오는 중 문제가 발생했습니다."})
+    	}
+
+	return ctx.JSON(http.StatusOK, posts)
 }
