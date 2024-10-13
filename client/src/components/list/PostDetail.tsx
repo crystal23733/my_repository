@@ -17,7 +17,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ postId }) => {
       <h1 className="title">{readDetail.title}</h1>
       <p className="content">{readDetail.content}</p>
       {readDetail.images.map((image, index) => (
-        <img key={index} src={`${process.env.NEXT_PUBLIC_BASE_URL}${image}`} alt={`Image ${index + 1}`} className="image mt-2" />
+        <img key={index} src={`${image}`} alt={`Image ${index + 1}`} className="image mt-2" />
       ))}
     </div>
   );
