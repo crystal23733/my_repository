@@ -38,6 +38,8 @@ func main() {
 	// post라우팅
 	postController := controller.NewPostController(dbClient)
 
+	e.Static("/uploads", "uploads")
+
 	// 기본 경로에 대한 핸들러 설정
 	e.GET("/", hello)
 	e.POST("/posts", postController.PostsCreate)
