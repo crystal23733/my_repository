@@ -164,5 +164,10 @@ func (c *PostController) GetPostsDetails(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "데이터를 가져오는 중 문제가 발생했습니다"})
 	}
 
+	// 이미지 URL 생성
+	for i, imagePath := range post.Images {
+		post.Images[i] = c.BaseURL + "/" + imagePath
+	}
+
 	return ctx.JSON(http.StatusOK, post)
 }
