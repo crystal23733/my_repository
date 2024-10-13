@@ -18,13 +18,15 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="container">
-      <h1 className="title">내 블로그</h1>
-      <button className="button is-primary" onClick={handleModal}>
-        글쓰기
-      </button>
+      <div className="create-box">
+      	<h1 className="title">내 블로그</h1>
+      	<button className="button is-primary" onClick={handleModal}>
+        	글쓰기
+      	</button>
 
-      {/* 모달 컴포넌트 */}
-      <CreatePostForm isActive={isActive} closeModal={closeModal} />
+      	{/* 모달 컴포넌트 */}
+      	<CreatePostForm isActive={isActive} closeModal={closeModal} />
+      </div>
     </div>
   );
 };
