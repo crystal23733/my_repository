@@ -42,6 +42,7 @@ func main() {
 	e.GET("/", hello)
 	e.POST("/posts", postController.PostsCreate)
 	e.GET("/posts/titles", postController.GetPostsTitles)
+	e.GET("/posts/:id", postController.GetPostsDetails)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
