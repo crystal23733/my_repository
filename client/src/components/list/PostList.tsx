@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import useGetPostsFetch from "../../hook/useGetPostsFetch";
-import Link from "next/link";
 import PostDetail from './PostDetail';
 
 /**
