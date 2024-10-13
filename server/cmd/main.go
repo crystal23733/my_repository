@@ -41,6 +41,7 @@ func main() {
 	// 기본 경로에 대한 핸들러 설정
 	e.GET("/", hello)
 	e.POST("/posts", postController.PostsCreate)
+	e.GET("/posts/titles", postController.GetPostsTitles)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
