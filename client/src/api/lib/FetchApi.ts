@@ -14,7 +14,7 @@ export default class FetchApi<T> {
    */
   constructor(
     baseUrl: string,
-    defaultHeaders: object = { "Content-Type": "application/json" },
+    defaultHeaders: object = {},
   ) {
     this.baseUrl = baseUrl;
     this.defaultHeaders = defaultHeaders;
@@ -41,7 +41,7 @@ export default class FetchApi<T> {
   async request(
     endpoint: string,
     method: string,
-    body?: object | null,
+    body?: FormData | null,
     headers?: object | null,
     credentials?: boolean | null,
   ): Promise<T> {
@@ -51,7 +51,7 @@ export default class FetchApi<T> {
       const response = await fetch(this.baseUrl + endpoint, {
         method,
         headers: { ...this.defaultHeaders, ...headers },
-        body: body ? JSON.stringify(body) : null,
+        body: body,
         credentials: credentials ? "include" : "same-origin",
         signal: this.controller?.signal, // AbortController의 signal을 전달하여 요청 취소 가능
       });
