@@ -13,6 +13,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -132,3 +133,29 @@ func (c *PostController) GetPostsTitles(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, posts)
 }
+
+// GetPostDetail함수는 특정 게시글의 상세 정보를 반환
+func (c *PostController) GetPostsDetails(ctx echo.Context) error {
+	postID := ctx.Param("id")
+
+	objID, err := primitive.ObjectIDFromHex(postID)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error":"잘못된 게시글 ID형식"})
+	}
+
+	collection := c.DB.Database(c.DBName).Collection("posts")
+	ctxMongo, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var post model.Reads
+	err = collection.FindOne(ctxMongo, bson.M{"_id":objID}).Decode(&post)
+	if err != nil {
+		if err == mongo.ErrNoDocuments{
+			return ctx.JSON(http.StatusNotFound, map[string]string{"error": "게시글을 찾을 수 없습니다"})
+		}
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "데이터를 가져오는 중 문제가 발생했습니다"})
+	}
+
+	return ctx.JSON(http.StatusOK, post)
+}
+
