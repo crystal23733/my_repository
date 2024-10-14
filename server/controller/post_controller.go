@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -13,21 +14,24 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // PostController는 게시글 관련 요청을 처리하는 컨트롤러이다.
 type PostController struct {
-	DB *mongo.Client
-	DBName string
+	DB      *mongo.Client
+	DBName  string
+	BaseURL string
 }
 
 // NewPostController는 새로운 PostController 인스턴스를 생성한다.
 func NewPostController(db *mongo.Client) *PostController {
 	return &PostController{
-		DB: db,
-		DBName: config.DB_NAME(),
+		DB:      db,
+		DBName:  config.DB_NAME(),
+		BaseURL: config.SERVER_URL(),
 	}
 }
 
@@ -59,8 +63,11 @@ func (c *PostController) PostsCreate(ctx echo.Context) error {
 
 	files := form.File["images"]
 	for _, file := range files {
+		// 파일 이름에 타임스탬프 추가하여 유니크하게 만듦
+		filename := fmt.Sprintf("%d_%s", time.Now().UnixNano(), file.Filename)
+		filePath := filepath.Join(savePath, filename)
+
 		// 각 파일을 /uploads폴더에 저장
-		filePath := filepath.Join(savePath, file.Filename)
 		src, err := file.Open()
 		if err != nil {
 			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "파일 열기 실패"})
@@ -78,7 +85,9 @@ func (c *PostController) PostsCreate(ctx echo.Context) error {
 			return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "파일 복사 실패"})
 		}
 
-		imagePaths = append(imagePaths, filePath) // 저장된 파일 경로를 기록합니다.
+		// 상대 경로로 저장
+		relativeImagePath := filepath.Join("uploads", filename)
+		imagePaths = append(imagePaths, relativeImagePath)
 	}
 
 	// 데이터 확인
@@ -115,20 +124,50 @@ func (c *PostController) GetPostsTitles(ctx echo.Context) error {
 
 	// MongoDB에서 게시글의 ID와 제목만 가져옴
 	cursor, err := collection.Find(ctxMongo, bson.M{}, options.Find().SetProjection(bson.M{
-		"title":1,
-		"_id":1,
+		"title": 1,
+		"_id":   1,
 	}))
 	if err != nil {
 		log.Println("MongoDB 쿼리 실패:", err)
-		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error":"데이터를 가져오는 중 문제가 발생하였습니다."})
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "데이터를 가져오는 중 문제가 발생하였습니다."})
 	}
 	defer cursor.Close(ctxMongo)
 
 	var posts []model.Gets
 	if err := cursor.All(ctxMongo, &posts); err != nil {
-        	log.Printf("데이터 디코딩 실패: %v", err)
-        	return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "데이터를 가져오는 중 문제가 발생했습니다."})
-    	}
+		log.Printf("데이터 디코딩 실패: %v", err)
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "데이터를 가져오는 중 문제가 발생했습니다."})
+	}
 
 	return ctx.JSON(http.StatusOK, posts)
+}
+
+// GetPostDetail함수는 특정 게시글의 상세 정보를 반환
+func (c *PostController) GetPostsDetails(ctx echo.Context) error {
+	postID := ctx.Param("id")
+
+	objID, err := primitive.ObjectIDFromHex(postID)
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "잘못된 게시글 ID형식"})
+	}
+
+	collection := c.DB.Database(c.DBName).Collection("posts")
+	ctxMongo, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var post model.Reads
+	err = collection.FindOne(ctxMongo, bson.M{"_id": objID}).Decode(&post)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return ctx.JSON(http.StatusNotFound, map[string]string{"error": "게시글을 찾을 수 없습니다"})
+		}
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "데이터를 가져오는 중 문제가 발생했습니다"})
+	}
+
+	// 이미지 URL 생성
+	for i, imagePath := range post.Images {
+		post.Images[i] = c.BaseURL + "/" + imagePath
+	}
+
+	return ctx.JSON(http.StatusOK, post)
 }

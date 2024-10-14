@@ -22,12 +22,11 @@ export default (postId: string): UseReadPostsDetailReturn => {
   useEffect(() => {
     const fetchData = async () => {
       const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL as string;
-      const DETAIL_URL = process.env.NEXT_PUBLIC_DETAIL_URL as string;
       const fetchApi = new FetchApi<ReadDetail>(BASE_URL);
+      const POST_URL = process.env.NEXT_PUBLIC_POST_ENDPOINT as string;
+      const endpoint = `${POST_URL}/${postId}`;
       try {
-        const endpoint = `${DETAIL_URL}/${postId}`;
         const data = await fetchApi.request(endpoint, "GET");
-        console.log(data);
         setReadDetail(data);
       } catch (err) {
         setError((err as Error).message);

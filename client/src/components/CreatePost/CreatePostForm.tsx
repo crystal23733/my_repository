@@ -32,10 +32,6 @@ const CreatePostForm: React.FC<IModalProps> = ({ isActive, closeModal }) => {
     }
   };
 
-  console.log("제목:", title);
-  console.log("내용:", content);
-  console.log("이미지 수:", images.length);
-
   // 폼 제출 핸들러
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,6 +76,7 @@ const CreatePostForm: React.FC<IModalProps> = ({ isActive, closeModal }) => {
           <label className="label">이미지 업로드</label>
           <div className="control">
             <input
+              placeholder="파일을 선택해주세요."
               className="input"
               type="file"
               accept="image/*"

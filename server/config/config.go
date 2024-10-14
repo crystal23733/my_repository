@@ -44,3 +44,9 @@ func DB_NAME() string {
 	dbName := os.Getenv("DB_NAME")
 	return dbName
 }
+
+func SERVER_URL() string {
+	serverUrl := os.Getenv("SERVER_URL")
+	return serverUrl
+}
+

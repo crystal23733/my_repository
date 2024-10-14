@@ -55,12 +55,10 @@ const useSubmitPost = () => {
       const api = new FetchApi<ApiResponse>(baseUrl);
 
       const response = await api.request(postEndpoint, "POST", formData);
-
-      console.log("서버 응답:", response);
       alert("게시글이 성공적으로 등록되었습니다.");
       closeModal();
+      window.location.reload();
     } catch (error) {
-      console.error("게시글 등록 실패:", error);
       alert("게시글 등록 중 문제가 발생했습니다.");
     } finally {
       setLoading(false);
