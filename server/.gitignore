@@ -1,3 +1,6 @@
 /tmp
 .env
 /uploads
+
+.env*.development
+.env*.production
