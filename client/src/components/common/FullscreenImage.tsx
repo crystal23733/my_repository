@@ -55,23 +55,33 @@ const FullscreenImage: React.FC<FullscreenImageProps> = ({
 
   useEffect(() => {
     const container = containerRef.current;
+  
     if (container && !document.fullscreenElement) {
       container.requestFullscreen().catch((err) => {
         console.error(`전체화면 모드 활성화 중 오류 발생: ${err.message}`);
       });
     }
-
+  
+    const exitHandler = () => {
+      if (!document.fullscreenElement) {
+        onClose(); // 전체화면 해제 시 컴포넌트 닫기
+      }
+    };
+  
     document.addEventListener("keydown", handleKeyDown);
-
+    document.addEventListener("fullscreenchange", exitHandler); // 전체화면 해제 감지
+  
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("fullscreenchange", exitHandler);
       if (document.fullscreenElement) {
         document.exitFullscreen().catch((err) => {
           console.error(`전체화면 모드 종료 중 오류 발생: ${err.message}`);
         });
       }
     };
-  }, [handleKeyDown]);
+  }, [handleKeyDown, onClose]);
+  
 
   return (
     <div ref={containerRef} className={styles.fullscreenImage}>
