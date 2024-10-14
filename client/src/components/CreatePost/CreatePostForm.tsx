@@ -80,6 +80,7 @@ const CreatePostForm: React.FC<IModalProps> = ({ isActive, closeModal }) => {
           <label className="label">이미지 업로드</label>
           <div className="control">
             <input
+              placeholder="파일을 선택해주세요."
               className="input"
               type="file"
               accept="image/*"
