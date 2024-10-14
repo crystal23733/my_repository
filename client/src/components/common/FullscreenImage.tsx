@@ -90,21 +90,6 @@ const FullscreenImage: React.FC<FullscreenImageProps> = ({
         alt={`전체화면 ${currentIndex + 1}`}
         className={styles.image}
       />
-      <button
-        onClick={prevImage}
-        className={`${styles.navButton} ${styles.prev}`}
-      >
-        이전
-      </button>
-      <button
-        onClick={nextImage}
-        className={`${styles.navButton} ${styles.next}`}
-      >
-        다음
-      </button>
-      <button onClick={onClose} className={styles.closeButton}>
-        닫기
-      </button>
     </div>
   );
 };
