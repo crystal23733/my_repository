@@ -24,7 +24,7 @@ const PostList: React.FC = () => {
     <div className="container">
       <nav className="panel">
         <p className="panel-heading">게시글 목록</p>
-        {posts.length === 0 ? (
+        {!posts || posts.length === 0 ? (
           <div className="panel-block">게시글이 없습니다.</div>
         ) : (
           posts.map((post) => (
