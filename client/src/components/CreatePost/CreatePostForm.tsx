@@ -32,10 +32,6 @@ const CreatePostForm: React.FC<IModalProps> = ({ isActive, closeModal }) => {
     }
   };
 
-  console.log("제목:", title);
-  console.log("내용:", content);
-  console.log("이미지 수:", images.length);
-
   // 폼 제출 핸들러
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -27,7 +27,6 @@ export default (postId: string): UseReadPostsDetailReturn => {
       const endpoint = `${POST_URL}/${postId}`;
       try {
         const data = await fetchApi.request(endpoint, "GET");
-        console.log(data);
         setReadDetail(data);
       } catch (err) {
         setError((err as Error).message);
