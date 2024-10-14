@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import useGetPostsFetch from "../../hook/useGetPostsFetch";
-import PostDetail from './PostDetail';
+import PostDetail from "./PostDetail";
 
 /**
  * 게시글 리스트 컴포넌트
