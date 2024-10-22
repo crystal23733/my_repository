@@ -7,7 +7,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="kr">
-      <head>{/*메타데이터 핸들링 할 곳*/}</head>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        />
+      </head>
       <body>{children}</body>
     </html>
   );
